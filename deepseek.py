@@ -223,6 +223,11 @@ class DeepseekReasonerNode:
         return {
             "required": {
                 "prompt": ("STRING", {"multiline": True}),
+                "system_prompt": ("STRING", {
+                    "multiline": True,
+                    "default": "You are a helpful assistant",
+                    "tooltip": "系统提示词"
+                }),
                 "clear_history": ("BOOLEAN", {
                     "default": False, 
                     "tooltip": "清除历史对话记录"
@@ -281,7 +286,8 @@ class DeepseekReasonerNode:
                 return f.read()
         return None
 
-    def execute(self, prompt, clear_history=False, temperature=0.7, 
+    def execute(self, prompt, system_prompt="You are a helpful assistant", 
+                clear_history=False, temperature=0.7, 
                 max_tokens=2048, top_p=1.0,
                 frequency_penalty=0.0, presence_penalty=0.0):
         if not self.api_key:
@@ -297,11 +303,16 @@ class DeepseekReasonerNode:
             )
             
             # 构建请求参数
+            # 如果历史记录为空，添加系统提示词到历史记录中
+            if not self.message_history:
+                self.message_history.append({"role": "system", "content": system_prompt})
+            
+            # 添加当前用户消息
+            self.message_history.append({"role": "user", "content": prompt})
+            
             params = {
                 "model": "deepseek-reasoner",
-                "messages": self.message_history + [
-                    {"role": "user", "content": prompt}
-                ],
+                "messages": self.message_history,
                 "temperature": temperature,
                 "max_tokens": max_tokens,
                 "top_p": top_p,
@@ -317,7 +328,6 @@ class DeepseekReasonerNode:
             answer = response.choices[0].message.content
             
             # 将助手的回答添加到历史记录
-            self.message_history.append({"role": "user", "content": prompt})
             self.message_history.append({
                 "role": "assistant",
                 "content": answer

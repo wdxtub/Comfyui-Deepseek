@@ -96,7 +96,7 @@ class SiliconDeepseekChat:
             url = f"{self.base_url}/chat/completions"
             
             payload = {
-                "model": "deepseek-ai/DeepSeek-V3",
+                "model": "deepseek-ai/DeepSeek-V3.2-Exp",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
