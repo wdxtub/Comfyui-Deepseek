@@ -24,6 +24,7 @@ class SiliconDeepseekChat:
         return {
             "required": {
                 "prompt": ("STRING", {"multiline": True}),
+                "model": (["deepseek-ai/DeepSeek-V3.2-Exp", "moonshotai/Kimi-K2-Instruct-0905", "Qwen/Qwen3-VL-235B-A22B-Instruct"], {"default": "deepseek-ai/DeepSeek-V3.2-Exp"}),
                 "system_prompt": ("STRING", {
                     "multiline": True,
                     "default": "You are a helpful assistant"
@@ -86,7 +87,7 @@ class SiliconDeepseekChat:
                 return f.read()
         return None
 
-    def execute(self, prompt, system_prompt="You are a helpful assistant", 
+    def execute(self, prompt, model, system_prompt="You are a helpful assistant", 
                 temperature=0.7, max_tokens=512, top_p=0.7,
                 top_k=50, frequency_penalty=0.5, stop_sequence=""):
         if not self.api_key:
@@ -96,7 +97,7 @@ class SiliconDeepseekChat:
             url = f"{self.base_url}/chat/completions"
             
             payload = {
-                "model": "deepseek-ai/DeepSeek-V3.2-Exp",
+                "model": model,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
@@ -156,6 +157,7 @@ class SiliconDeepseekReasoner:
         return {
             "required": {
                 "prompt": ("STRING", {"multiline": True}),
+                "model": (["deepseek-ai/DeepSeek-R1", "moonshotai/Kimi-K2-Thinking", "zai-org/GLM-4.6", "Qwen/Qwen3-VL-235B-A22B-Thinking"], {"default": "deepseek-ai/DeepSeek-R1"}),
                 "system_prompt": ("STRING", {
                     "multiline": True,
                     "default": "You are a helpful assistant that can reason step by step"
@@ -218,7 +220,7 @@ class SiliconDeepseekReasoner:
                 return f.read()
         return None
 
-    def execute(self, prompt, system_prompt="You are a helpful assistant that can reason step by step", 
+    def execute(self, prompt, model, system_prompt="You are a helpful assistant that can reason step by step", 
                 clear_history=False, temperature=0.7, max_tokens=512, top_p=0.7, top_k=50, frequency_penalty=0.5):
         if not self.api_key:
             return ("错误: 请在config.json中配置silicon_api_key", "错误: API密钥未配置")
@@ -230,7 +232,7 @@ class SiliconDeepseekReasoner:
             url = f"{self.base_url}/chat/completions"
             
             payload = {
-                "model": "deepseek-ai/DeepSeek-R1",
+                "model": model,
                 "messages": [
                     {"role": "system", "content": system_prompt}
                 ] + self.message_history + [

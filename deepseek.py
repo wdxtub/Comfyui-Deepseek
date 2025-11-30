@@ -115,7 +115,7 @@ class DeepseekAdvancedNode:
                 "max_tokens": ("INT", {
                     "default": 2048,
                     "min": 1,
-                    "max": 4096,
+                    "max": 8192,
                     "step": 1,
                     "tooltip": "最大输出长度"
                 }),
@@ -244,7 +244,7 @@ class DeepseekReasonerNode:
                 "max_tokens": ("INT", {
                     "default": 2048,
                     "min": 1,
-                    "max": 4096,
+                    "max": 32768,
                     "step": 1,
                     "tooltip": "最大输出长度"
                 }),
